@@ -1,0 +1,83 @@
+<project name="ML" basedir="." default="build">
+
+    <property environment="env"/>
+    <property name="src.dir" value="src"/>
+
+    <property name="junit.output.dir" value="report"/>
+    <property name="build.dir" value="bin"/>
+    <property name="junit.src" value="test"/>
+    <property name="javadoc.dir" value="doc"/>
+    <property name="javajar.dir" value="jar" />
+
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.8"/>
+    <property name="source" value="1.8"/>
+    <property name="packages" value="etf.nim.mm140593d.*"/>
+
+    <path id="junit.class.path">
+        <pathelement location="${build.dir}"/>
+        <pathelement location="lib/junit.jar"/>
+        <pathelement location="lib/hamcrest-core.jar"/>
+    </path>
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <delete dir="${junit.output.dir}"/>
+        <delete dir="${javadoc.dir}"/>
+        <delete dir="${javajar.dir}" />
+    </target>
+
+    <target name="init" depends="clean">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${junit.output.dir}"/>
+        <mkdir dir="${javadoc.dir}"/>
+    </target>
+
+    <target name="build" depends="init">
+        <javac debug="true" destdir="${build.dir}" source="${source}" target="${target}"
+               debuglevel="${debuglevel}">
+            <src path="${src.dir}"/>
+            <src path="${junit.src}"/>
+            <classpath refid="junit.class.path"/>
+        </javac>
+    </target>
+
+    <target name="build-jar" depends="build">
+        <mkdir dir="${javajar.dir}" />
+        <jar destfile="${javajar.dir}/nim.jar" basedir="${build.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="etf.nim.mm140593d.Main" />
+            </manifest>
+        </jar>
+        <chmod file="${javajar.dir}/nim.jar" perm="u+x" />
+    </target>
+
+    <target name="unit_test">
+        <junit printsummary="on" fork="true" haltonfailure="no">
+            <classpath refid="junit.class.path"/>
+            <formatter type="xml"/>
+            <batchtest todir="${junit.output.dir}">
+                <fileset dir="${junit.src}">
+                    <include name="**/*Test.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="report">
+        <junitreport todir="${junit.output.dir}">
+            <fileset dir="${junit.output.dir}">
+                <include name="*.xml"/>
+            </fileset>
+            <report format="frames" todir="${junit.output.dir}"/>
+        </junitreport>
+    </target>
+
+    <target name="javadoc">
+        <javadoc packagenames="${packages}" sourcepath="${src.dir}" destdir="${javadoc.dir}"
+                 classpath="${src.dir}" author="true" version="true" use="true"
+                 windowtitle="${ant.project.name}"
+                 doctitle="&lt;h1&gt;${ant.project.name}&lt;/h1&gt;"/>
+    </target>
+
+</project>
