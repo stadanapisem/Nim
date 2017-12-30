@@ -1,6 +1,6 @@
 package etf.nim.mm140593d.test;
 
-import etf.nim.mm140593d.GameState;
+import etf.nim.mm140593d.game.GameState;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -1,4 +1,7 @@
-package etf.nim.mm140593d;
+package etf.nim.mm140593d.game;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GameState {
 
@@ -12,6 +15,7 @@ public class GameState {
     private int winnerPlayer;
 
     private boolean notFinished;
+    private int moveNumber;
 
     private int[] lastValuePlayer;
 
@@ -23,6 +27,18 @@ public class GameState {
         this.heapsNumber = heapsNumber;
         this.ObjectsNumber = new int[heapsNumber];
         this.lastValuePlayer = new int[2];
+        this.moveNumber = 0;
+    }
+
+    @Override public GameState clone() {
+        GameState newGameState = new GameState(this.heapsNumber);
+        newGameState.ObjectsNumber = this.ObjectsNumber.clone();
+        newGameState.lastValuePlayer = this.lastValuePlayer.clone();
+        newGameState.currentPlayer = this.currentPlayer;
+        newGameState.notFinished = true;
+        newGameState.winnerPlayer = this.winnerPlayer;
+
+        return newGameState;
     }
 
     public void initialize() {
@@ -43,13 +59,27 @@ public class GameState {
         return true;
     }
 
-    public boolean changeAndCheck(int idx, int val, boolean justCheck) throws IllegalStateException {
+    public boolean changeAndCheck(GameMove gameMove, boolean justCheck)
+        throws IllegalStateException {
+        return changeAndCheck(gameMove.getHeap(), gameMove.getObjects(), justCheck);
+    }
+
+    public boolean changeAndCheck(int idx, int val, boolean justCheck)
+        throws IllegalStateException {
         if (val > 2 * lastValuePlayer[(currentPlayer + 1) % 2]) {
             throw new IllegalStateException("Cannot take this much (2 * last player)");
         }
 
+        if (idx < 0 || idx >= heapsNumber) {
+            throw new IllegalStateException("Wrong heap!");
+        }
+
+        if (ObjectsNumber[idx] < val) {
+            throw new IllegalStateException("You can't remove that much!");
+        }
+
         int tmpValue = ObjectsNumber[idx];
-        ObjectsNumber[idx] = val;
+        ObjectsNumber[idx] -= val;
 
         for (int i = 0; i < heapsNumber - 1; i++) {
             for (int j = i + 1; j < heapsNumber; j++) {
@@ -62,6 +92,8 @@ public class GameState {
 
         if (justCheck) {
             ObjectsNumber[idx] = tmpValue;
+        } else {
+            lastValuePlayer[currentPlayer] = val;
         }
 
         return true;
@@ -76,7 +108,7 @@ public class GameState {
             }
         }
 
-        if (winFlag) {
+        /*if (winFlag) {
             winnerPlayer = (currentPlayer + 1) % 2;
             notFinished = false;
             return ;
@@ -90,12 +122,48 @@ public class GameState {
                     break value_loop;
                 }
             }
-        }
+        }*/
 
         if (winFlag) {
-            winnerPlayer = (currentPlayer + 1) % 2;
+            if (moveNumber == 0) {
+                winnerPlayer = currentPlayer;
+            } else {
+                winnerPlayer = (currentPlayer + 1) % 2;
+            }
+
             notFinished = false;
         }
+    }
+
+    public List<GameMove> getAllPossibleMoves() {
+        List<GameMove> possibleMoves = new ArrayList<>();
+
+        for (int i = 1; i <= 10; i++) {
+            for (int j = 0; j < heapsNumber; j++) {
+                try {
+                    if (changeAndCheck(j, i, true)) {
+                        possibleMoves.add(new GameMove(j, i));
+                    }
+                } catch (IllegalStateException e) {
+                    // Expected
+                }
+            }
+        }
+
+        return possibleMoves;
+    }
+
+    public GameState applyMove(GameMove move) {
+        GameState result = this.clone();
+
+        result.changeAndCheck(move.getHeap(), move.getObjects(), false);
+        result.checkWinCondition(); // ne radi kada moze da pobedi u prvom potezu
+
+        return result;
+    }
+
+    public void changePlayer() {
+        currentPlayer = (currentPlayer + 1) % 2;
     }
 
     public int getHeapsNumber() {
@@ -118,11 +186,32 @@ public class GameState {
         }
     }
 
+    public int[] getObjectsNumber() {
+        return ObjectsNumber;
+    }
+
     public int getWinnerPlayer() {
         return winnerPlayer;
     }
 
     public boolean isNotFinished() {
         return notFinished;
+    }
+
+    public void increaseMoveNumber() {
+        moveNumber++;
+    }
+
+    public void decreaseMoveNumber() {
+        moveNumber--;
+    }
+
+    @Override public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < heapsNumber; i++) {
+            sb.append("Heap " + (i + 1) + ": " + ObjectsNumber[i] + "\n");
+        }
+
+        return sb.toString();
     }
 }

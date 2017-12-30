@@ -1,4 +1,4 @@
-package etf.nim.mm140593d;
+package etf.nim.mm140593d.game;
 
 public class GameMove {
     private int heap;
@@ -23,5 +23,10 @@ public class GameMove {
 
     public void setObjects(int objects) {
         this.objects = objects;
+    }
+
+    @Override
+    public String toString() {
+        return "Heap: " + (heap + 1) + " objs: " + objects;
     }
 }
