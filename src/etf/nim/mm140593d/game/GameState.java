@@ -157,7 +157,7 @@ public class GameState {
         GameState result = this.clone();
 
         result.changeAndCheck(move.getHeap(), move.getObjects(), false);
-        result.checkWinCondition(); // ne radi kada moze da pobedi u prvom potezu
+        result.checkWinCondition();
 
         return result;
     }

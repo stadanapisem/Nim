@@ -1,5 +1,6 @@
 package etf.nim.mm140593d.game;
 
+import etf.nim.mm140593d.player.AlphaBetaComputerPlayer;
 import etf.nim.mm140593d.player.HumanPlayer;
 import etf.nim.mm140593d.player.SimpleComputerPlayer;
 
@@ -56,7 +57,8 @@ public class Game {
         while (true) {
             try {
                 System.out.println("Choose Player 1");
-                System.out.print("\t1. Human\n\t2.Computer\nEnter a number [1 - 2]: ");
+                System.out.print(
+                    "\t1. Human\n\t2. Simple Computer\n\t3. Intermediate Computer\nEnter a number [1 - 3]: ");
                 playerMode[0] = Integer.parseInt(bufferedReader.readLine());
 
                 break;
@@ -65,7 +67,7 @@ public class Game {
             }
         }
 
-        if (playerMode[0] == 2) {
+        if (playerMode[0] == 2 || playerMode[0] == 3) {
             while (true) {
                 try {
                     System.out.print("Enter maximum search depth [1 - 2^31] (default is 2^31): ");
@@ -84,7 +86,8 @@ public class Game {
         while (true) {
             try {
                 System.out.println("Choose Player 2");
-                System.out.print("\t1. Human\n\t2.Computer\nEnter a number [1 - 2]: ");
+                System.out.print(
+                    "\t1. Human\n\t2. Simple Computer\n\t3. Intermediate Computer\nEnter a number [1 - 3]: ");
                 playerMode[1] = Integer.parseInt(bufferedReader.readLine());
 
                 break;
@@ -93,7 +96,7 @@ public class Game {
             }
         }
 
-        if (playerMode[1] == 2) {
+        if (playerMode[1] == 2 || playerMode[1] == 3) {
             while (true) {
                 try {
                     System.out.print("Enter maximum search depth [1 - 2^31] (default is 2^31): ");
@@ -121,18 +124,23 @@ public class Game {
 
     private void gamePlay() {
         gameState.initialize();
-        GamePlay player1, player2;
+        GamePlay player1 = null;
+        GamePlay player2 = null;
 
         if (playerMode[0] == 1) {
             player1 = new HumanPlayer();
-        } else {
+        } else if (playerMode[0] == 2) {
             player1 = new SimpleComputerPlayer(treeDepth[0]);
+        } else if (playerMode[0] == 3) {
+            player1 = new AlphaBetaComputerPlayer(treeDepth[0]);
         }
 
         if (playerMode[1] == 1) {
             player2 = new HumanPlayer();
-        } else {
+        } else if (playerMode[1] == 2) {
             player2 = new SimpleComputerPlayer(treeDepth[1]);
+        } else if (playerMode[1] == 3) {
+            player2 = new AlphaBetaComputerPlayer(treeDepth[1]);
         }
 
         while (gameState.isNotFinished()) {
