@@ -2,6 +2,7 @@ package etf.nim.mm140593d.game;
 
 import etf.nim.mm140593d.player.AlphaBetaComputerPlayer;
 import etf.nim.mm140593d.player.HumanPlayer;
+import etf.nim.mm140593d.player.QAgent;
 import etf.nim.mm140593d.player.SimpleComputerPlayer;
 
 import java.io.BufferedReader;
@@ -57,8 +58,8 @@ public class Game {
         while (true) {
             try {
                 System.out.println("Choose Player 1");
-                System.out.print(
-                    "\t1. Human\n\t2. Simple Computer\n\t3. Intermediate Computer\nEnter a number [1 - 3]: ");
+                System.out.print("\t1. Human\n\t2. Simple Computer\n\t3. Intermediate Computer\n\t"
+                    + "4. Computer Champion\nEnter a number [1 - 4]: ");
                 playerMode[0] = Integer.parseInt(bufferedReader.readLine());
 
                 break;
@@ -86,8 +87,8 @@ public class Game {
         while (true) {
             try {
                 System.out.println("Choose Player 2");
-                System.out.print(
-                    "\t1. Human\n\t2. Simple Computer\n\t3. Intermediate Computer\nEnter a number [1 - 3]: ");
+                System.out.print("\t1. Human\n\t2. Simple Computer\n\t3. Intermediate Computer\n\t"
+                    + "4. Computer Champion\nEnter a number [1 - 4]: ");
                 playerMode[1] = Integer.parseInt(bufferedReader.readLine());
 
                 break;
@@ -133,6 +134,8 @@ public class Game {
             player1 = new SimpleComputerPlayer(treeDepth[0]);
         } else if (playerMode[0] == 3) {
             player1 = new AlphaBetaComputerPlayer(treeDepth[0]);
+        } else if (playerMode[0] == 4) {
+            player1 = new QAgent(0);
         }
 
         if (playerMode[1] == 1) {
@@ -141,7 +144,12 @@ public class Game {
             player2 = new SimpleComputerPlayer(treeDepth[1]);
         } else if (playerMode[1] == 3) {
             player2 = new AlphaBetaComputerPlayer(treeDepth[1]);
+        } else if (playerMode[1] == 4) {
+            player2 = new QAgent(1);
         }
+
+        player1.loadState();
+        player2.loadState();
 
         while (gameState.isNotFinished()) {
             gameState.checkWinCondition();
@@ -173,6 +181,9 @@ public class Game {
             gameState.increaseMoveNumber();
             gameState.changePlayer();
         }
+
+        player1.saveState(gameState.getWinnerPlayer());
+        player2.saveState(gameState.getWinnerPlayer());
 
         System.out.printf("Player %d wins!!!", gameState.getWinnerPlayer() + 1);
     }

@@ -33,5 +33,4 @@ public class SimpleComputerPlayer extends GamePlay {
             e.printStackTrace();
         }
     }
-
 }

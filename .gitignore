@@ -29,3 +29,4 @@ doc/
 out/
 .editorconfig
 Nim.iml
+*.dat

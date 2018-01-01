@@ -1,9 +1,10 @@
 package etf.nim.mm140593d.game;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameState {
+public class GameState implements Serializable {
 
     private static final Integer MAX_HEAPS = 10;
     private static final Integer MAX_OBJECTS = 10;
@@ -204,6 +205,39 @@ public class GameState {
 
     public void decreaseMoveNumber() {
         moveNumber--;
+    }
+
+    @Override public boolean equals(Object obj) {
+        boolean flag = true;
+        GameState gameState = (GameState) obj;
+
+        if (gameState.notFinished != this.notFinished) {
+            flag = false;
+        }
+
+        if (gameState.heapsNumber != this.heapsNumber) {
+            flag = false;
+        }
+
+        for (int i = 0; i < this.heapsNumber; i++) {
+            if (!gameState.getObjectsNumber(i).equals(this.getObjectsNumber(i))) {
+                flag = false;
+            }
+        }
+
+        return flag;
+    }
+
+    @Override public int hashCode() {
+        int result = 3;
+
+        int c = this.notFinished ? 0 : 1 + this.heapsNumber;
+
+        for (int i = 0; i < this.heapsNumber; i++) {
+            c += 11 * i + this.getObjectsNumber(i);
+        }
+
+        return 37 * result + c;
     }
 
     @Override public String toString() {

@@ -1,6 +1,8 @@
 package etf.nim.mm140593d.game;
 
-public class GameMove {
+import java.io.Serializable;
+
+public class GameMove implements Serializable {
     private int heap;
     private int objects;
 
@@ -25,8 +27,7 @@ public class GameMove {
         this.objects = objects;
     }
 
-    @Override
-    public String toString() {
+    @Override public String toString() {
         return "Heap: " + (heap + 1) + " objs: " + objects;
     }
 }
