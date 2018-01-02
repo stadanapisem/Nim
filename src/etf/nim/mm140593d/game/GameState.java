@@ -68,7 +68,7 @@ public class GameState implements Serializable {
     public boolean changeAndCheck(int idx, int val, boolean justCheck)
         throws IllegalStateException {
         if (val > 2 * lastValuePlayer[(currentPlayer + 1) % 2]) {
-            throw new IllegalStateException("Cannot take this much (2 * last player)");
+            throw new IllegalStateException("Cannot take this much (2 * last player) " + idx + " " + val + "\n" + this.toString());
         }
 
         if (idx < 0 || idx >= heapsNumber) {

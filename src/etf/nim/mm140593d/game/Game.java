@@ -135,7 +135,7 @@ public class Game {
         } else if (playerMode[0] == 3) {
             player1 = new AlphaBetaComputerPlayer(treeDepth[0]);
         } else if (playerMode[0] == 4) {
-            player1 = new QAgent(0);
+            player1 = new QAgent(0, true);
         }
 
         if (playerMode[1] == 1) {
@@ -145,7 +145,7 @@ public class Game {
         } else if (playerMode[1] == 3) {
             player2 = new AlphaBetaComputerPlayer(treeDepth[1]);
         } else if (playerMode[1] == 4) {
-            player2 = new QAgent(1);
+            player2 = new QAgent(1, false);
         }
 
         player1.loadState();

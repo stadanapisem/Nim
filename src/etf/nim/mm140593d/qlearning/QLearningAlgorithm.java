@@ -3,11 +3,12 @@ package etf.nim.mm140593d.qlearning;
 import etf.nim.mm140593d.game.GameMove;
 import etf.nim.mm140593d.game.GameState;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-public class QLearningAlgorithm {
+public class QLearningAlgorithm implements Serializable {
 
     private HashMap<GameState, HashMap<GameMove, Double>> Q;
     private double alpha;
@@ -39,17 +40,33 @@ public class QLearningAlgorithm {
         GameMove resultAction = null;
         if (Math.random() < eps) {
             HashMap<GameMove, Double> possibleMoves = Q.get(gs);
-            Integer randomValue = (int) (Math.random() * possibleMoves.keySet().size());
-            resultAction = (GameMove) possibleMoves.keySet().toArray()[randomValue];
+
+            while (true) {
+                try {
+                    Integer randomValue = (int) (Math.random() * possibleMoves.keySet().size());
+                    resultAction = (GameMove) possibleMoves.keySet().toArray()[randomValue];
+
+                    if (gs.changeAndCheck(resultAction, true)) {
+                        break;
+                    }
+                } catch (IllegalStateException e) {
+                    // Expected
+                }
+            }
         } else {
             // take best
             double max = -100000;
             for (Entry<GameMove, Double> entry : Q.get(gs).entrySet()) {
-                if (entry.getValue() > max) {
-                    max = entry.getValue();
-                    resultAction = entry.getKey();
+                try {
+                    if (entry.getValue() > max && gs.changeAndCheck(entry.getKey(), true)) {
+                        max = entry.getValue();
+                        resultAction = entry.getKey();
+                    }
+                } catch (IllegalStateException e) {
+                    // Expected
                 }
             }
+
         }
 
 
@@ -76,7 +93,9 @@ public class QLearningAlgorithm {
             reward = -1.0;
         }
 
-        Q.get(lastState).put(lastMove, reward);
+        if (lastState != null && lastMove != null) {
+            Q.get(lastState).put(lastMove, reward);
+        }
     }
 
     public HashMap<GameState, HashMap<GameMove, Double>> getQ() {
