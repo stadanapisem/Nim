@@ -26,7 +26,8 @@ public class QAgentTrainingTest {
 
     @Test public void traning() {
 
-        for (int iterations = 0; iterations < 5; iterations++) {
+        for (int iterations = 0; iterations < 1; iterations++) {
+            System.err.println("iter " + iterations);
             for (int i = 1; i < 10; i++) {
                 List<int[]> subsets = new ArrayList<>();
                 int[] s = new int[i];

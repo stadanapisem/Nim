@@ -8,11 +8,28 @@ import etf.nim.mm140593d.player.SimpleComputerPlayer;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+/**
+ * Class from which the game is initialized and played.
+ */
 public class Game {
+    /**
+     * Stores the state of the game.
+     */
     private GameState gameState = null;
+
+    /**
+     * Stores the input for the mode of the player (human, simple, advanced, champion).
+     */
     private int playerMode[];
+
+    /**
+     * Stores the tree depth for the search algorithms.
+     */
     private int treeDepth[];
 
+    /**
+     * Method used to initialize the game, read values for the number of heaps, the number of objects and the modes for the players.
+     */
     public void gameInitialization() {
         System.out.println("New Game:\n");
 
@@ -123,6 +140,9 @@ public class Game {
         gamePlay();
     }
 
+    /**
+     * Method that initializes the player objects, loads trained data if necessary and plays the game, by invoking {@link GamePlay#doMove(GameState)} method for each player.
+     */
     private void gamePlay() {
         gameState.initialize();
         GamePlay player1 = null;
@@ -145,7 +165,7 @@ public class Game {
         } else if (playerMode[1] == 3) {
             player2 = new AlphaBetaComputerPlayer(treeDepth[1]);
         } else if (playerMode[1] == 4) {
-            player2 = new QAgent(1, false);
+            player2 = new QAgent(1, true);
         }
 
         player1.loadState();

@@ -11,11 +11,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashMap;
 
 public class QAgent extends GamePlay {
 
-    private static final double eps = 0.1;
+    private static final double eps = 0.5;
     private static final double alpha = 0.3;
     private static final double gamma = 0.9;
     private QLearningAlgorithm algorithm;
@@ -43,7 +42,7 @@ public class QAgent extends GamePlay {
             System.out.println(
                 "Computing time: " + Duration.between(start, end).toMillis() + " ms\nTaking move: "
                     + bestMove.toString());
-            gameState.changeAndCheck(bestMove, false);
+            gameState.changeAndCheck(false, bestMove.getObjects(), bestMove.getNumberOnHeap());
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException();
@@ -54,8 +53,8 @@ public class QAgent extends GamePlay {
         algorithm.finalize(playerID);
 
         try (ObjectOutputStream oos = new ObjectOutputStream(
-            new FileOutputStream("train_data" + playerID + ".dat"))) {
-            oos.writeObject(algorithm.getQ());
+            new FileOutputStream("train_data" + this.playerID + ".dat"))) {
+            algorithm.saveTable(oos);
             oos.flush();
             oos.close();
         } catch (Exception e) {
@@ -67,11 +66,9 @@ public class QAgent extends GamePlay {
     @Override public void loadState() {
         try (ObjectInputStream ois = new ObjectInputStream(
             new FileInputStream("train_data" + playerID + ".dat"))) {
-            HashMap<GameState, HashMap<GameMove, Double>> obj =
-                (HashMap<GameState, HashMap<GameMove, Double>>) ois.readObject();
 
+            algorithm.loadTable(ois);
             ois.close();
-            algorithm.setQ(obj);
         } catch (Exception e) {
             e.printStackTrace();
         }

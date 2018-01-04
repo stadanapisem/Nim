@@ -3,6 +3,9 @@ package etf.nim.mm140593d.qlearning;
 import etf.nim.mm140593d.game.GameMove;
 import etf.nim.mm140593d.game.GameState;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -46,7 +49,8 @@ public class QLearningAlgorithm implements Serializable {
                     Integer randomValue = (int) (Math.random() * possibleMoves.keySet().size());
                     resultAction = (GameMove) possibleMoves.keySet().toArray()[randomValue];
 
-                    if (gs.changeAndCheck(resultAction, true)) {
+                    if (gs.changeAndCheck(true, resultAction.getObjects(),
+                        resultAction.getNumberOnHeap())) {
                         break;
                     }
                 } catch (IllegalStateException e) {
@@ -58,7 +62,9 @@ public class QLearningAlgorithm implements Serializable {
             double max = -100000;
             for (Entry<GameMove, Double> entry : Q.get(gs).entrySet()) {
                 try {
-                    if (entry.getValue() > max && gs.changeAndCheck(entry.getKey(), true)) {
+                    if (entry.getValue() >= max && gs
+                        .changeAndCheck(true, entry.getKey().getObjects(),
+                            entry.getKey().getNumberOnHeap())) {
                         max = entry.getValue();
                         resultAction = entry.getKey();
                     }
@@ -72,7 +78,7 @@ public class QLearningAlgorithm implements Serializable {
 
 
         if (lastMove != null && lastState != null) {
-            Double maxValue = Collections.max(Q.get(lastState).values());
+            Double maxValue = Collections.max(Q.get(gs).values());
             Double lastValue = Q.get(lastState).get(lastMove);
 
             lastValue += alpha * (gamma * maxValue - lastValue);
@@ -98,11 +104,33 @@ public class QLearningAlgorithm implements Serializable {
         }
     }
 
-    public HashMap<GameState, HashMap<GameMove, Double>> getQ() {
-        return Q;
+    public void saveTable(ObjectOutputStream oos) throws IOException {
+        oos.writeInt(Q.size());
+        Q.entrySet().forEach(entry -> {
+            try {
+                oos.writeObject(entry.getKey());
+                oos.writeObject(entry.getValue());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            /*entry.getValue().entrySet().forEach(entr -> {
+                try {
+                    oos.writeObject(entr.getKey());
+                    oos.writeObject(entr.getValue());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });*/
+        });
     }
 
-    public void setQ(HashMap<GameState, HashMap<GameMove, Double>> q) {
-        Q = q;
+    public void loadTable(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        int mapSize = ois.readInt();
+
+        for (int i = 0; i < mapSize; i++) {
+            GameState gs = (GameState) ois.readObject();
+            HashMap<GameMove, Double> map = (HashMap<GameMove, Double>) ois.readObject();
+            Q.put(gs, map);
+        }
     }
 }
