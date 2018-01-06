@@ -1,9 +1,9 @@
 package etf.nim.mm140593d.game;
 
-import etf.nim.mm140593d.player.AlphaBetaComputerPlayer;
+import etf.nim.mm140593d.player.AlphaBetaAgent;
 import etf.nim.mm140593d.player.HumanPlayer;
 import etf.nim.mm140593d.player.QAgent;
-import etf.nim.mm140593d.player.SimpleComputerPlayer;
+import etf.nim.mm140593d.player.MinimaxAgent;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -30,7 +30,7 @@ public class Game {
     /**
      * Method used to initialize the game, read values for the number of heaps, the number of objects and the modes for the players.
      */
-    public void gameInitialization() {
+    public int gameInitialization() {
         System.out.println("New Game:\n");
 
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
@@ -137,13 +137,13 @@ public class Game {
             System.out.printf("Heap %d: %d\n", i + 1, gameState.getObjectsNumber(i));
         }
 
-        gamePlay();
+        return gamePlay();
     }
 
     /**
      * Method that initializes the player objects, loads trained data if necessary and plays the game, by invoking {@link GamePlay#doMove(GameState)} method for each player.
      */
-    private void gamePlay() {
+    private int gamePlay() {
         gameState.initialize();
         GamePlay player1 = null;
         GamePlay player2 = null;
@@ -151,9 +151,9 @@ public class Game {
         if (playerMode[0] == 1) {
             player1 = new HumanPlayer();
         } else if (playerMode[0] == 2) {
-            player1 = new SimpleComputerPlayer(treeDepth[0]);
+            player1 = new MinimaxAgent(treeDepth[0]);
         } else if (playerMode[0] == 3) {
-            player1 = new AlphaBetaComputerPlayer(treeDepth[0]);
+            player1 = new AlphaBetaAgent(treeDepth[0]);
         } else if (playerMode[0] == 4) {
             player1 = new QAgent(0, true);
         }
@@ -161,9 +161,9 @@ public class Game {
         if (playerMode[1] == 1) {
             player2 = new HumanPlayer();
         } else if (playerMode[1] == 2) {
-            player2 = new SimpleComputerPlayer(treeDepth[1]);
+            player2 = new MinimaxAgent(treeDepth[1]);
         } else if (playerMode[1] == 3) {
-            player2 = new AlphaBetaComputerPlayer(treeDepth[1]);
+            player2 = new AlphaBetaAgent(treeDepth[1]);
         } else if (playerMode[1] == 4) {
             player2 = new QAgent(1, true);
         }
@@ -206,5 +206,6 @@ public class Game {
         player2.saveState(gameState.getWinnerPlayer());
 
         System.out.printf("Player %d wins!!!", gameState.getWinnerPlayer() + 1);
+        return gameState.getWinnerPlayer();
     }
 }

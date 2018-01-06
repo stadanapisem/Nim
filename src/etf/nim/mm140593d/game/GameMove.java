@@ -55,6 +55,6 @@ public class GameMove implements Serializable {
     }
 
     @Override public String toString() {
-        return "Heap: " + (heap + 1) + " objs: " + objects;
+        return "From " + numberOnHeap + " taking " + objects;
     }
 }

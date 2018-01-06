@@ -9,11 +9,11 @@ import java.time.Duration;
 import java.time.Instant;
 
 
-public class SimpleComputerPlayer extends GamePlay {
+public class MinimaxAgent extends GamePlay {
     private MiniMax algorithm = new MiniMax();
     private int maxDepth;
 
-    public SimpleComputerPlayer(int maxDepth) {
+    public MinimaxAgent(int maxDepth) {
         this.maxDepth = maxDepth;
     }
 

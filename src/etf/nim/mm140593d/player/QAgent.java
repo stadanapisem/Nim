@@ -12,23 +12,49 @@ import java.io.ObjectOutputStream;
 import java.time.Duration;
 import java.time.Instant;
 
+/**
+ * Implementation of the agent for Q-Learning algorithm.
+ */
 public class QAgent extends GamePlay {
 
-    private static final double eps = 0.5;
-    private static final double alpha = 0.3;
-    private static final double gamma = 0.9;
-    private QLearningAlgorithm algorithm;
-    private int playerID;
-    private boolean train;
+    /**
+     * The random factor for the exploration function in the training of the agent.
+     */
+    private static final double eps = 0.1;
 
+    /**
+     * The learning factor.
+     */
+    private static final double alpha = 0.3;
+
+    /**
+     * The discount factor.
+     */
+    private static final double gamma = 0.7;
+
+    /**
+     * Q-Learning algorithm object. Contains the learning table.
+     */
+    private QLearningAlgorithm algorithm;
+
+    /**
+     * ID of the current player.
+     */
+    private int playerID;
+
+    /**
+     * Creates a agent with given id and work mode.
+     *
+     * @param playerID {@link Integer} ID of the player
+     * @param train    {@link Boolean} Should the algorithm train or not
+     */
     public QAgent(int playerID, boolean train) {
         this.playerID = playerID;
-        this.train = train;
 
-        if (this.train) {
+        if (train) {
             algorithm = new QLearningAlgorithm(alpha, gamma, eps, playerID);
         } else {
-            algorithm = new QLearningAlgorithm(alpha, gamma, 1.0, playerID);
+            algorithm = new QLearningAlgorithm(alpha, gamma, 0, playerID);
         }
     }
 

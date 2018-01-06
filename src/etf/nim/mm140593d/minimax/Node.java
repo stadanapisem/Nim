@@ -6,11 +6,34 @@ import etf.nim.mm140593d.game.GameState;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implements a node in the game tree for the MiniMax and AlphaBetaPruning.
+ */
 public class Node {
+
+    /**
+     * The game state for which this node is created.
+     */
     private GameState gameState;
+
+    /**
+     * Game move that lead to this state.
+     */
     private GameMove gameMove;
+
+    /**
+     * Score of the node.
+     */
     private int score;
+
+    /**
+     * Is it the min or max node.
+     */
     private boolean isMax;
+
+    /**
+     * Children of the node.
+     */
     private List<Node> children;
 
     public Node(GameState gs, boolean isMax, GameMove gm) {

@@ -265,6 +265,9 @@ public class GameState implements Serializable {
         return result;
     }
 
+    /**
+     * Change the id of the current player.
+     */
     public void changePlayer() {
         currentPlayer = (currentPlayer + 1) % 2;
     }

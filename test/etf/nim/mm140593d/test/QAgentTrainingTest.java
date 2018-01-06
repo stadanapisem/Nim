@@ -1,57 +1,26 @@
 package etf.nim.mm140593d.test;
 
 import etf.nim.mm140593d.game.Game;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.List;
 
 public class QAgentTrainingTest {
 
-    public static final int[] allObjectValues = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    @Ignore @Test public void training() {
+        int wins[] = new int[2];
+        int games = 0;
 
-    int[] generateSubset(int[] subset) {
-        int[] result = new int[subset.length];
-
-        for (int i = 0; i < subset.length; i++) {
-            result[i] = allObjectValues[subset[i]];
-        }
-
-        return result;
-    }
-
-    @Test public void traning() {
-
-        for (int iterations = 0; iterations < 1; iterations++) {
+        for (int iterations = 0; iterations < 30; iterations++) {
             System.err.println("iter " + iterations);
-            for (int i = 1; i < 10; i++) {
-                List<int[]> subsets = new ArrayList<>();
-                int[] s = new int[i];
-
-                for (int j = 0; (s[j] = j) < i - 1; j++)
-                    ;
-                subsets.add(generateSubset(s));
-
-                while (true) {
-                    int j;
-
-                    for (j = i - 1; j >= 0 && s[j] == allObjectValues.length - i + j; j--)
-                        ;
-                    if (j < 0) {
-                        break;
-                    }
-
-                    s[j]++;
-                    for (++j; j < i; j++) {
-                        s[j] = s[j - 1] + 1;
-                    }
-
-                    subsets.add(generateSubset(s));
-                }
+            for (int i = 1; i <= 10; i++) {
+                System.err.println("asdasdassadasd: " + i);
+                List<int[]> subsets = GenerateCombinations.generate(i);
 
                 for (int j = 0; j < subsets.size(); j++) {
                     StringBuilder sb = new StringBuilder();
@@ -61,6 +30,8 @@ public class QAgentTrainingTest {
                         sb.append(subsets.get(j)[k]).append("\r\n");
                     }
 
+                    //sb.append("4\r\n3\r\n6\r\n");
+                    //sb.append("3\r\n5\r\n4\r\n");
                     sb.append("4\r\n4\r\n");
 
                     ByteArrayInputStream inputStream =
@@ -71,10 +42,12 @@ public class QAgentTrainingTest {
 
                         }
                     }));
-
-                    new Game().gameInitialization();
+                    games++;
+                    wins[new Game().gameInitialization()]++;
                 }
             }
         }
+
+        System.err.println(games + " " + wins[0] + " " + wins[1]);
     }
 }

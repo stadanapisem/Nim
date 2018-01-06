@@ -8,10 +8,19 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Queue;
 
+/**
+ * Implements the MiniMax algorithm.
+ */
 public class MiniMax {
     private Tree tree;
     private int maxDepth;
 
+    /**
+     * Creates the root node and delegates the construction of the rest of the game tree.
+     *
+     * @param gameState {@link GameState} Current game state
+     * @param maxDepth  {@link Integer} Maximum depth of the game tree
+     */
     public void constructTree(GameState gameState, int maxDepth) {
         this.maxDepth = maxDepth;
         Node rootNode = new Node(gameState, true, null);
@@ -19,9 +28,17 @@ public class MiniMax {
         constructTree(rootNode, 0);
     }
 
+    /**
+     * Constructs the game tree to the predetermined depth.
+     *
+     * @param rootNode {@link Node} Root node for the current function iteration
+     * @param depth    {@link Integer} Current node depth
+     */
     public void constructTree(Node rootNode, int depth) {
         boolean isMaxChild = !rootNode.isMax();
 
+        // If the maxDepth is not reached and game is not finished, create a node for every
+        // possible move for the current game state.
         if (rootNode.getGameState().isNotFinished() && depth <= maxDepth) {
             rootNode.getGameState().getAllPossibleMoves().forEach(gameMove -> {
                 Node childNode =
@@ -34,6 +51,7 @@ public class MiniMax {
                 constructTree(childNode, depth + 1);
             });
         } else if (depth > maxDepth) {
+            // If maxDepth is reached, calculate the heuristic function for the this node's score
             int score =
                 Arrays.stream(rootNode.getGameState().getObjectsNumber()).reduce((x, y) -> x ^ y)
                     .getAsInt();
@@ -42,17 +60,22 @@ public class MiniMax {
             return;
         }
 
+        // If node is leaf, score can only be win or lose.
         if (rootNode.getChildren().size() == 0) {
             rootNode.setScore(rootNode.isMax() ? -1 : 1);
         } else {
+            // Score of the current node is minimum or maximum of it's children.
             Comparator<Node> scoreComparator = Comparator.comparing(Node::getScore);
             rootNode.setScore(rootNode.getChildren().stream()
                 .max(rootNode.isMax() ? scoreComparator : scoreComparator.reversed())
                 .orElseThrow(IllegalStateException::new).getScore());
-            //rootNode.setScore(rootNode.getChildren().stream().mapToInt(Node::getScore).sum());
         }
     }
 
+    /**
+     * After the tree is constructed, find the best move for the current game state.
+     * @return {@link GameMove} Best possible move
+     */
     public GameMove getBestMove() {
         Comparator<Node> scoreComparator = Comparator.comparing(Node::getScore)
             .thenComparing(node -> node.getGameMove().getObjects());

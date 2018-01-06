@@ -8,11 +8,11 @@ import etf.nim.mm140593d.minimax.AlphaBetaPruning;
 import java.time.Duration;
 import java.time.Instant;
 
-public class AlphaBetaComputerPlayer extends GamePlay {
+public class AlphaBetaAgent extends GamePlay {
     private AlphaBetaPruning algorithm = new AlphaBetaPruning();
     private int maxDepth;
 
-    public AlphaBetaComputerPlayer(int maxDepth) {
+    public AlphaBetaAgent(int maxDepth) {
         this.maxDepth = maxDepth;
     }
 
