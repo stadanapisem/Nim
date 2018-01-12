@@ -2,9 +2,8 @@ package etf.nim.mm140593d.test;
 
 import etf.nim.mm140593d.game.GamePlay;
 import etf.nim.mm140593d.game.GameState;
+import etf.nim.mm140593d.player.AlphaBetaAgent;
 import etf.nim.mm140593d.player.QAgent;
-import etf.nim.mm140593d.test.GenerateCombinations;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -12,7 +11,7 @@ import java.util.List;
 
 public class GamePlayTest {
 
-    public static final int heapsNumber = 10;
+    public static final int heapsNumber = 2;
 
     /**
      * First player wins <=> xor of all objects is not 0
@@ -24,9 +23,9 @@ public class GamePlayTest {
         return Arrays.stream(objs).reduce((x, y) -> x ^ y).getAsInt() != 0;
     }
 
-    @Ignore @Test public void test() {
+    @Test public void test() {
         GamePlay player1 = new QAgent(0, false);
-        GamePlay player2 = new QAgent(1, false);
+        GamePlay player2 = new AlphaBetaAgent(6);
 
         GameState gameState = new GameState(heapsNumber);
 

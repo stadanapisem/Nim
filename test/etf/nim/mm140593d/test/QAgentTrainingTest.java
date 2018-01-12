@@ -12,11 +12,11 @@ import java.util.List;
 
 public class QAgentTrainingTest {
 
-    @Ignore @Test public void training() {
+     @Test public void training() {
         int wins[] = new int[2];
         int games = 0;
 
-        for (int iterations = 0; iterations < 30; iterations++) {
+        for (int iterations = 0; iterations < 1; iterations++) {
             System.err.println("iter " + iterations);
             for (int i = 1; i <= 10; i++) {
                 System.err.println("asdasdassadasd: " + i);
@@ -31,7 +31,7 @@ public class QAgentTrainingTest {
                     }
 
                     //sb.append("4\r\n3\r\n6\r\n");
-                    //sb.append("3\r\n5\r\n4\r\n");
+                    //sb.append("3\r\n6\r\n4\r\n");
                     sb.append("4\r\n4\r\n");
 
                     ByteArrayInputStream inputStream =

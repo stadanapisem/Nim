@@ -130,7 +130,7 @@ public class QLearningAlgorithm implements Serializable {
             Double lastValue = Q.get(lastState).get(lastMove);
             Double reward =
                 Arrays.stream(gs.getObjectsNumber()).reduce((x, y) -> x ^ y).getAsInt() != 0
-                    ? -1.0 : 0.0;
+                    ? -1.6 : 0.4;
 
             lastValue += alpha * (reward + gamma * maxValue - lastValue);
             Q.get(lastState).put(lastMove, lastValue);

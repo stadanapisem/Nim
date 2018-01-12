@@ -7,6 +7,13 @@ public class GameMove implements Serializable {
     private int objects;
     private int numberOnHeap;
 
+    /**
+     * Creates the GameMove object. First parameter is needed for the MiniMax.
+     *
+     * @param heap Index of the heap
+     * @param objects Number of objects to take from the heap
+     * @param numberOnHeap Number of objects on heap, used for QLearning
+     */
     public GameMove(int heap, int objects, int numberOnHeap) {
         this.heap = heap;
         this.objects = objects;
